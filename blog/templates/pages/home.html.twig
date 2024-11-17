@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <main>
+        <h1>Random Blog</h1>
+
+        {% for article in articles %}
+            {% if loop.first %}
+                {{ include('partials/article_large.html.twig', {'article': article}) }}
+            {% elseif loop.index == 2 %}
+                <nav>
+                    <ul>
+                        {% for category in categories %}
+                            <li><a role="button"
+                                   href="{{ path('category', {'slug': category.slug}) }}">{{ category.name }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </nav>
+            {% else %}
+                {{ include('partials/article_compact.html.twig', {'article': article}) }}
+            {% endif %}
+        {% endfor %}
+    </main>
+
+
+{% endblock %}

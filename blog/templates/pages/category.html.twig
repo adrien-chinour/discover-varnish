@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <nav aria-label="breadcrumb">
+        <ul>
+            <li><a href="{{ path('home') }}">Accueil</a></li>
+            <li>{{ category.name }}</li>
+        </ul>
+    </nav>
+
+    <main>
+        <h1>Catégorie {{ category.name }}</h1>
+
+        <div class="grid">
+            {% for article in headings %}
+                {{ include('partials/article_large.html.twig', {'article': article}) }}
+            {% endfor %}
+        </div>
+
+        {% for article in articles %}
+            {{ include('partials/article_compact.html.twig', {'article': article}) }}
+        {% endfor %}
+    </main>
+{% endblock %}

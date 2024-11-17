@@ -1,0 +1,86 @@
+services:
+    blog:
+        container_name: blog
+        build: ./docker
+        ports: [ "80" ]
+        volumes:
+            - ./blog:/var/www/html
+            - ./docker/apache2/default.conf:/etc/apache2/sites-available/000-default.conf
+
+    varnish:
+        container_name: varnish
+        image: varnish
+        command: -n varnish
+        depends_on: [ blog ]
+        ports: [ "80:80" ]
+        volumes:
+            - ./varnish:/etc/varnish
+            - workdir:/var/lib/varnish
+
+    prometheus:
+        container_name: prometheus
+        image: prom/prometheus
+        volumes:
+            - ./prometheus:/etc/prometheus
+
+    grafana:
+        container_name: grafana
+        image: grafana/grafana-oss
+        ports: [ "3000:3000" ]
+        volumes:
+            - grafana_storage:/var/lib/grafana
+            - ./grafana:/etc/grafana
+
+    loki:
+        container_name: loki
+        image: grafana/loki:2.9.0
+        command: -config.file=/etc/loki/local-config.yaml
+
+    exporter:
+        container_name: exporter
+        command: /tmp/prometheus_varnish_exporter -n varnish -verbose
+        volumes:
+            - workdir:/var/lib/varnish
+        depends_on: [ varnish ]
+        build:
+            dockerfile_inline: |
+                FROM curlimages/curl
+                RUN set -ex; \
+                    cd /tmp/; \
+                    curl -L https://github.com/jonnenauha/prometheus_varnish_exporter/releases/download/1.6.1/prometheus_varnish_exporter-1.6.1.linux-amd64.tar.gz | tar xvzf - --strip 1
+                FROM varnish
+                COPY --from=0 /tmp/prometheus_varnish_exporter /tmp/prometheus_varnish_exporter
+
+    promtail:
+        container_name: promtail
+        entrypoint: ""
+        command: bash -c "varnishncsa -t off -n varnish | /tmp/promtail -config.file=/etc/promtail/config.yml --stdin"
+        volumes:
+            - ./prometheus/promtail.yaml:/etc/promtail/config.yml
+            - workdir:/var/lib/varnish
+        build:
+            dockerfile_inline: |
+                FROM curlimages/curl
+                RUN set -ex; \
+                    curl -sL https://github.com/grafana/loki/releases/download/v2.8.7/promtail-linux-amd64.zip | unzip -d /tmp -
+                
+                FROM varnish
+                COPY --from=0 --chmod=555 /tmp/promtail-linux-amd64 /tmp/promtail
+
+    k6:
+        container_name: k6
+        image: grafana/k6
+        links: [ varnish:www.blog.local ]
+        profiles: [ cli ]
+        env_file: [ k6/.env ]
+        volumes: [ ./k6/:/home/k6/ ]
+        ports: [ "5665:5665" ]
+
+volumes:
+    database_data:
+    grafana_storage:
+    workdir:
+        driver: local
+        driver_opts:
+            type: tmpfs
+            device: tmpfs

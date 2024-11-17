@@ -1,0 +1,11 @@
+<aside style="margin-top: 4rem">
+    <h2>Recommendations</h2>
+    <div class="grid">
+        {% for article in recommendations %}
+            <article class="compact headings" style="margin-top: 0">
+                <h2><a href="{{ path('article', {'slug': article.slug}) }}">{{ article.title }}</a></h2>
+                <p>Par {{ article.author }} · Publié le {{ article.publishedAt | date('d/m/Y') }}</p>
+            </article>
+        {% endfor %}
+    </div>
+</aside>

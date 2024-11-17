@@ -1,0 +1,12 @@
+controllers:
+    resource:
+        path: ../src/Controller/
+        namespace: App\Controller
+    type: attribute
+
+fragments:
+    resource:
+        path: ../src/Controller/Fragment
+        namespace: App\Controller\Fragment
+    type: attribute
+    prefix: '/fragment'

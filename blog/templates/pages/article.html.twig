@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <nav aria-label="breadcrumb">
+        <ul>
+            <li><a href="{{ path('home') }}">Accueil</a></li>
+            <li>{{ article.title }}</li>
+        </ul>
+    </nav>
+
+    <main>
+        <div class="headings">
+            <h1>{{ article.title }}</h1>
+            <p>
+                Par {{ article.author }}
+                · Publié le {{ article.publishedAt | date('d/m/Y') }}
+                · <a href="#comments">{{ article.comments | length }} commentaire(s)</a>
+                · <a href="{{ path('category', {'slug': article.category.slug}) }}">{{ article.category.name }}</a>
+            </p>
+        </div>
+
+        <img src="{{ article.image }}" alt="{{ article.title }}">
+
+        <div style="margin-top: 2rem">
+            {{ article.content | raw }}
+        </div>
+    </main>
+
+    {{ render_esi(url('article_comments', { 'id': article.id })) }}
+    {{ render_esi(url('article_recommendations', { 'id': article.id })) }}
+{% endblock %}

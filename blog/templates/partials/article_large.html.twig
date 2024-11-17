@@ -1,0 +1,17 @@
+<article>
+    <header>
+        <img src="{{ article.image }}" alt="{{ article.title }}">
+    </header>
+
+    <div class="headings">
+        <h2><a href="{{ path('article', {'slug': article.slug}) }}">{{ article.title }}</a></h2>
+        <p>
+            Par {{ article.author }}
+            · Publié le {{ article.publishedAt | date('d/m/Y') }}
+            · {{ article.comments | length }} commentaire(s)
+            · <a href="{{ path('category', {'slug': article.category.slug}) }}">{{ article.category.name }}</a>
+        </p>
+    </div>
+
+    <p>{{ article.description | u.truncate(300, '...') }}</p>
+</article>

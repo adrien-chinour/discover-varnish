@@ -1,0 +1,13 @@
+<aside id="comments">
+    <h2>Commentaires</h2>
+    {% for comment in comments %}
+        <article class="compact headings">
+            <h2>{{ comment.author }}</h2>
+            <p>{{ comment.content }}</p>
+        </article>
+    {% else %}
+        <article>
+            <p>Aucun commentaire pour le moment.</p>
+        </article>
+    {% endfor %}
+</aside>
