@@ -1,26 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <title>Random Blog</title>
+    <head>
+        <title>Random Blog</title>
 
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="color-scheme" content="light dark"/>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="color-scheme" content="light dark"/>
 
-    <link rel="preconnect" href="https://cdn.jsdelivr.net">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@next/css/pico.jade.min.css">
+        <link rel="preconnect" href="https://cdn.jsdelivr.net">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@next/css/pico.jade.min.css">
 
-    <style>
-        .compact {
-            padding: 2rem;
-        }
-    </style>
+        <style>
+            .compact {
+                padding: 2rem;
+            }
+        </style>
 
-    <meta name="custom:date-generation" content="{{ "now" | date("Y-m-d H:i:s") }}">
-</head>
-<body class="container">
+        <meta name="custom:date-generation" content="{{ "now" | date("Y-m-d H:i:s", "Europe/Paris") }}">
+    </head>
+    <body class="container">
 
-{% block body %}{% endblock %}
-
-</body>
+        {% block body %}{% endblock %}
+    </body>
 </html>
